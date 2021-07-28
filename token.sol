@@ -5,6 +5,9 @@ pragma solidity 0.8.0;
 //      0.5% gets burned
 //      1% gets donated to a random charity
 
+// There is a "bet" function where users can send any amount of tokens,
+// with a 50/50 chance of losing it, or receiving double their initial amount
+
 abstract contract ERC20Interface {
     function totalSupply() public virtual view returns (uint256);
     function balanceOf(address tokenOwner) public virtual view returns (uint256 balance);
@@ -78,11 +81,17 @@ contract Coin is ERC20Interface, SafeMath {
         return allowed[tokenOwner][spender];
     }
     
+    function selectCharity(uint charityIndex) public returns (bool success) {
+        // ...
+        return true;
+    }
+    
     function _transfer(address from, address to, uint256 tokens) private returns (bool success) {
         uint256 amountToBurn = safeDiv(tokens, 200); // 0.5% of the transaction shall be burned
         uint256 amountToDonate = safeDiv(tokens, 100); // 1% of the transaction shall be donated
         uint256 amountToTransfer = safeSub(safeSub(tokens, amountToBurn), amountToDonate);
         
+        // Default to a random charity
         address charity = charities[random() % charities.length]; // Pick a random charity
         
         balances[from] = safeSub(balances[from], tokens);
