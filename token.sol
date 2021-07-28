@@ -5,9 +5,6 @@ pragma solidity 0.8.0;
 //      0.5% gets burned
 //      1% gets donated to a random charity
 
-// There is a "bet" function where users can send any amount of tokens,
-// with a 50/50 chance of losing it, or receiving double their initial amount
-
 abstract contract ERC20Interface {
     function totalSupply() public virtual view returns (uint256);
     function balanceOf(address tokenOwner) public virtual view returns (uint256 balance);
