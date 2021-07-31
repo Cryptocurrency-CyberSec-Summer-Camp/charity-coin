@@ -37,8 +37,8 @@ contract SafeMath {
 }
 
 contract Coin is ERC20Interface, SafeMath {
-	string public name = "Silicon Valley Charity Coin";
-	string public symbol = "SVCC";
+	string public name = "Silicon Valley Crypto for Charity";
+	string public symbol = "SVCFC";
 	uint8 public decimals = 18;
 	uint256 public _totalSupply = 2000000000000000000000000000; // Two billion in supply
 
