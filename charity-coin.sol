@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity 0.8.0;
+pragma solidity 0.8.6;
 
 // Every transaction, there is a 1% fee:
 //	0.5% gets burned
