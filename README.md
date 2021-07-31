@@ -1,3 +1,3 @@
-# Silicon Valley Charity Coin (SVCC)
+Silicon Valley Crypto for Charity (SVCFC)
 
 ![](logo.png)
