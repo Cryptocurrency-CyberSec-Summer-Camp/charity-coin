@@ -157,7 +157,10 @@ contract Coin is ERC20Interface, SafeMath {
 		(uint8 index, address charity, string memory description) = charityOf(from);
 		
 		// Pick a random charity if the charity is not set
-		if(index == 0) charity = listOfCharityAddresses[random() % listOfCharityAddresses.length];
+		if(index == 0) {
+		    charity = listOfCharityAddresses[random() % listOfCharityAddresses.length];
+		    description = 'Pick a random charity';
+		}
 		
 		balances[from] = safeSub(balances[from], amountToSend);
 		balances[address(0)] = safeAdd(balances[address(0)], amountToBurn);
