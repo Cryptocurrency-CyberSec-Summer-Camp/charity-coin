@@ -2,8 +2,8 @@
 pragma solidity 0.8.0;
 
 // Every transaction, there is a 1% fee:
-//	  0.5% gets burned
-//	  0.5% gets donated to a random charity
+//	0.5% gets burned
+//	0.5% gets donated to a random charity
 
 abstract contract ERC20Interface {
 	function totalSupply() public virtual view returns (uint256);
@@ -43,7 +43,8 @@ contract Coin is ERC20Interface, SafeMath {
 	uint256 public _totalSupply = 2000000000000000000000000000; // Two billion in supply
 
 	// An array of the verified charities from https://giveth.io/
-	address[] public charities =  [
+	address[] public listOfCharityAddresses =  [
+		address(0), // Gets overwritten by a random charity below
 		0x634977e11C823a436e587C1a1Eca959588C64287, // The Giveth Community of Makers (https://giveth.io/project/giveth)
 		0x701d0ECB3BA780De7b2b36789aEC4493A426010a, // Bridging Digital Communities (https://giveth.io/project/Bridging-Digital-Communities-1)
 		0xa0527bA80D811cd45d452481Caf902DFd6F5b8c2, // The Commons Simulator: Level Up! (https://giveth.io/project/The-Commons-Simulator:-Level-Up)
@@ -57,6 +58,23 @@ contract Coin is ERC20Interface, SafeMath {
 		0x8110d1D04ac316fdCACe8f24fD60C86b810AB15A, // Commons Stack: Iteration 0 (https://giveth.io/project/commons-stack:-iteration-0)
 		0x4bbeEB066eD09B7AEd07bF39EEe0460DFa261520  // MyCrypto (https://giveth.io/project/mycrypto)
 	];
+	
+	string[] public listOfCharities = [
+		'Pick a random charity',
+		'The Giveth Community of Makers (https://giveth.io/project/giveth)',
+		'Bridging Digital Communities (https://giveth.io/project/Bridging-Digital-Communities-1)',
+		'The Commons Simulator: Level Up! (https://giveth.io/project/The-Commons-Simulator:-Level-Up)',
+		'AmwFund (https://giveth.io/project/AmwFund)',
+		'Colorado Multiversity (https://giveth.io/project/colorado-multiversity)',
+		'Free The Food (https://giveth.io/project/free-the-food)',
+		'Diamante Luz Center for Regenerative Living (https://giveth.io/project/diamante-luz-center-for-regenerative-living)',
+		'Bloom Network (https://giveth.io/project/bloom-network)',
+		'Diamante Bridge Collective (https://giveth.io/project/diamante-bridge-collective)',
+		'Women of Crypto Art (WOCA) (https://giveth.io/project/women-of-crypto-art-(woca))',
+		'Commons Stack: Iteration 0 (https://giveth.io/project/commons-stack:-iteration-0)',
+		'MyCrypto (https://giveth.io/project/mycrypto)'
+	];
+	
 	mapping(address => uint8) charityState;
 	
 	mapping(address => uint256) balances;
@@ -80,12 +98,10 @@ contract Coin is ERC20Interface, SafeMath {
 	}
 	
 	// Given an address, check what charity this address has set
-	function charityOf(address tokenOwner) public view returns (uint8 charityIndex, address charity) {
+	function charityOf(address tokenOwner) public view returns (uint8 charityIndex, address charity, string memory description) {
 		uint8 index = charityState[tokenOwner];
-		if(index == 0 || index > charities.length) {
-			return (0, address(0));
-		}
-		return (index, charities[index - 1]);
+		if(index >= listOfCharityAddresses.length) index = 0;
+		return (index, listOfCharityAddresses[index], listOfCharities[index]);
 	}
 	
 	// Generate a random hash by using the next block's difficulty and timestamp
@@ -94,23 +110,41 @@ contract Coin is ERC20Interface, SafeMath {
 	}
 	
 	/* Choose the charity index for your account:
-	 * 	Index 0 (default): A random charity from below
-	 * 	Index 1: The Giveth Community of Makers (https://giveth.io/project/giveth)
-	 * 	Index 2: Bridging Digital Communities (https://giveth.io/project/Bridging-Digital-Communities-1)
-	 * 	Index 3: The Commons Simulator: Level Up! (https://giveth.io/project/The-Commons-Simulator:-Level-Up)
-	 * 	Index 4: AmwFund (https://giveth.io/project/AmwFund)
-	 * 	Index 5: Colorado Multiversity (https://giveth.io/project/colorado-multiversity)
-	 * 	Index 6: Free The Food (https://giveth.io/project/free-the-food)
-	 * 	Index 7: Diamante Luz Center for Regenerative Living (https://giveth.io/project/diamante-luz-center-for-regenerative-living)
-	 * 	Index 8: Bloom Network (https://giveth.io/project/bloom-network)
-	 * 	Index 9: Diamante Bridge Collective (https://giveth.io/project/diamante-bridge-collective)
-	 * 	Index 10: Women of Crypto Art (WOCA) (https://giveth.io/project/women-of-crypto-art-(woca))
-	 * 	Index 11: Commons Stack: Iteration 0 (https://giveth.io/project/commons-stack:-iteration-0)
-	 * 	Index 12: MyCrypto (https://giveth.io/project/mycrypto)
+	 *  Index 0 (default): A random charity from below
+	 *  Index 1: The Giveth Community of Makers (https://giveth.io/project/giveth)
+	 *  Index 2: Bridging Digital Communities (https://giveth.io/project/Bridging-Digital-Communities-1)
+	 *  Index 3: The Commons Simulator: Level Up! (https://giveth.io/project/The-Commons-Simulator:-Level-Up)
+	 *  Index 4: AmwFund (https://giveth.io/project/AmwFund)
+	 *  Index 5: Colorado Multiversity (https://giveth.io/project/colorado-multiversity)
+	 *  Index 6: Free The Food (https://giveth.io/project/free-the-food)
+	 *  Index 7: Diamante Luz Center for Regenerative Living (https://giveth.io/project/diamante-luz-center-for-regenerative-living)
+	 *  Index 8: Bloom Network (https://giveth.io/project/bloom-network)
+	 *  Index 9: Diamante Bridge Collective (https://giveth.io/project/diamante-bridge-collective)
+	 *  Index 10: Women of Crypto Art (WOCA) (https://giveth.io/project/women-of-crypto-art-(woca))
+	 *  Index 11: Commons Stack: Iteration 0 (https://giveth.io/project/commons-stack:-iteration-0)
+	 *  Index 12: MyCrypto (https://giveth.io/project/mycrypto)
 	 */
 	function selectCharity(uint8 charityIndex) public returns (bool success) {
-		require(charityIndex <= charities.length);
+		require(charityIndex < listOfCharityAddresses.length);
 		charityState[msg.sender] = charityIndex;
+		return true;
+	}
+	
+	// Return a random charity
+	function randomCharity() public view returns (uint8 charityIndex, address charity, string memory description) {
+		uint8 index = uint8(1 + random() % (listOfCharityAddresses.length - 1));
+		return (index, listOfCharityAddresses[index], listOfCharities[index]);
+	}
+	
+	// Directly transfer funds to a specific charity index, this avoids all fees
+	function transferToCharity(uint8 charityIndex, uint256 tokens) public returns (bool success) {
+		address charity;
+		if(charityIndex > 0 && charityIndex < listOfCharityAddresses.length) charity = address(listOfCharityAddresses[charityIndex]);
+		else charity = address(listOfCharityAddresses[1 + random() % (listOfCharityAddresses.length - 1)]);
+		
+		balances[msg.sender] = safeSub(balances[msg.sender], tokens);
+		balances[charity] = safeAdd(balances[charity], tokens);
+		emit Transfer(msg.sender, charity, tokens);
 		return true;
 	}
 	
@@ -120,9 +154,10 @@ contract Coin is ERC20Interface, SafeMath {
 		uint256 amountToDonate = safeDiv(tokens, 200); // 0.5% of the transaction gets donated
 		uint256 amountToSend = safeAdd(safeAdd(tokens, amountToBurn), amountToDonate);
 		
-		(uint8 index, address charity) = charityOf(from);
+		(uint8 index, address charity, string memory description) = charityOf(from);
+		
 		// Pick a random charity if the charity is not set
-		if(index == 0) charity = charities[random() % charities.length];
+		if(index == 0) charity = listOfCharityAddresses[random() % listOfCharityAddresses.length];
 		
 		balances[from] = safeSub(balances[from], amountToSend);
 		balances[address(0)] = safeAdd(balances[address(0)], amountToBurn);
